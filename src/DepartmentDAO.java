@@ -1,8 +1,10 @@
+import Models.Department;
+
 import javax.xml.transform.Result;
 import java.sql.*;
 
 public class DepartmentDAO {
-    public boolean insert(int deptno, String dname, String dloc){
+    public boolean insert(Department department){
         Conexao conexao = new Conexao();
         Connection conn = conexao.connect();
 
@@ -10,9 +12,9 @@ public class DepartmentDAO {
             PreparedStatement pstmt = conn.prepareStatement("INSERT INTO DEPT" +
                     "(DEPTNO,DNAME,LOC) VALUES (?,?,?)");
 
-            pstmt.setInt(1, deptno);
-            pstmt.setString(2, dname);
-            pstmt.setString(3, dloc);
+            pstmt.setInt(1, department.getDeptno());
+            pstmt.setString(2, department.getDname());
+            pstmt.setString(3, department.getDloc());
             return pstmt.executeUpdate() != 0;
         } catch (SQLException sqle){
             sqle.printStackTrace();
@@ -92,14 +94,16 @@ public class DepartmentDAO {
         }
     }
 
-    public ResultSet searchByNumber(int id) {
+    public Department searchByNumber(int id) {
         Conexao conexao = new Conexao();
         Connection conn = conexao.connect();
+        ResultSet rs = null;
 
         try{
             PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM DEPT WHERE DEPTNO = ?");
             preparedStatement.setInt(1, id);
-            return preparedStatement.executeQuery();
+            rs = preparedStatement.executeQuery();
+            return new Department(rs.getInt("DEPTNO"), rs.getString("DNAME"), rs.getString("DLOC"));
         } catch (SQLException sqle){
             sqle.printStackTrace();
             return null;
@@ -108,14 +112,16 @@ public class DepartmentDAO {
         }
     }
 
-    public ResultSet searchByName(String name){
+    public Department searchByName(String name){
         Conexao conexao = new Conexao();
         Connection conn = conexao.connect();
+        ResultSet rs = null;
 
         try{
             PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM DEPT WHERE DNAME = ?");
             preparedStatement.setString(1, name);
-            return preparedStatement.executeQuery();
+            rs = preparedStatement.executeQuery();
+            return new Department(rs.getInt("DEPTNO"), rs.getString("DNAME"), rs.getString("DLOC"));
         } catch (SQLException sqle){
             sqle.printStackTrace();
             return null;
@@ -124,14 +130,16 @@ public class DepartmentDAO {
         }
     }
 
-    public ResultSet searchByLoc(String loc){
+    public Department searchByLoc(String loc){
         Conexao conexao = new Conexao();
         Connection conn = conexao.connect();
+        ResultSet rs = null;
 
         try{
             PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM DEPT WHERE DLOC = ?");
             preparedStatement.setString(1, loc);
-            return preparedStatement.executeQuery();
+            rs = preparedStatement.executeQuery();
+            return new Department(rs.getInt("DEPTNO"), rs.getString("DNAME"), rs.getString("DLOC"));
         } catch (SQLException sqle){
             sqle.printStackTrace();
             return null;
@@ -139,6 +147,4 @@ public class DepartmentDAO {
             conexao.disconnect(conn);
         }
     }
-
-
 }
