@@ -24,7 +24,7 @@ public class DepartmentDAO {
             conexao.disconnect(conn);
         }
     }
-    public boolean updateName(String deptName, int id){
+    public int updateName(String deptName, int id){
         Conexao conexao = new Conexao();
         Connection conn = conexao.connect();
 
@@ -35,15 +35,17 @@ public class DepartmentDAO {
             preparedStatement.setString(1, deptName);
             preparedStatement.setInt(2, id);
             int afetadas = preparedStatement.executeUpdate();
-            return afetadas > 0;
+
+            if (afetadas > 1) return 1;
+            return 0;
         } catch (SQLException sqle){
             sqle.printStackTrace();
-            return false;
+            return -1;
         } finally {
             conexao.disconnect(conn);
         }
     }
-    public boolean updateLoc(int deptId, String loc){
+    public int updateLoc(int deptId, String loc){
         Conexao conexao = new Conexao();
         Connection conn = conexao.connect();
 
@@ -51,15 +53,16 @@ public class DepartmentDAO {
             PreparedStatement preparedStatement = conn.prepareStatement("UPDATE DEPT SET LOC = ? WHERE DEPTNO = ?");
             preparedStatement.setString(1, loc);
             preparedStatement.setInt(2, deptId);
-            return preparedStatement.executeUpdate() > 0;
+            if (preparedStatement.executeUpdate() > 0) return 1;
+            return 0;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
-            return false;
+            return -1;
         } finally {
             conexao.disconnect(conn);
         }
     }
-    public boolean remove(int id){
+    public int remove(int id){
         Conexao conexao = new Conexao();
         Connection conn = conexao.connect();
 
@@ -68,14 +71,14 @@ public class DepartmentDAO {
                     "DELETE FROM DEPT WHERE DEPTNO = ?"
             );
             preparedStatement.setInt(1, id);
-            return preparedStatement.executeUpdate() > 0;
+            if (preparedStatement.executeUpdate() > 0) return 1;
+            return 0;
         } catch (SQLException sqle){
             sqle.printStackTrace();
-            return false;
+            return -1;
         } finally {
             conexao.disconnect(conn);
         }
-
     }
 
 
